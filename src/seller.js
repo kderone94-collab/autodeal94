@@ -103,8 +103,8 @@ export async function sellerApp({main,escape:e,money,api}){
     const select=(name,label,options)=>'<label class="field">'+label+'<select name="'+name+'"><option value="">Sélectionner</option>'+options.map(value=>'<option '+(value===car?.[name]?'selected':'')+'>'+e(value)+'</option>').join('')+'</select></label>';
     shell('<button class="text-button" id="back-list">Retour aux véhicules</button><div class="seller-heading"><div><span class="kicker">'+(car?e(car.ref):'Nouvelle annonce')+'</span><h1>'+(car?'Modifier le véhicule':'Ajouter un véhicule')+'</h1></div></div>'+
       (car?.pendingPhotoCount?'<p class="migration-note">Une photo de cette annonce doit être réimportée après le transfert. Ajoutez-la dans la section Photos avant de publier.</p>':'')+
-      '<form id="vehicle-form" class="vehicle-form"><div class="editor-main">'+
-      '<section class="box"><h2>Le véhicule</h2><div class="form-grid">'+
+      '<form id="vehicle-form" class="vehicle-form" novalidate><div class="wizard-progress" aria-label="Progression"><p id="step-label" aria-live="polite"></p><progress id="step-progress" max="5" value="1"></progress></div><div class="editor-main">'+
+      '<section class="box wizard-step" data-step="0"><h2 tabindex="-1">Le véhicule</h2><div class="form-grid">'+
       input('brand','Marque *','required list="brands" maxlength="60" autocomplete="off"')+input('model','Modèle *','required list="models" maxlength="100" autocomplete="off"')+
       input('trim','Version / finition','maxlength="150" placeholder="1.2 PureTech 100 Allure"')+select('type','Type de véhicule',types)+
       input('year','Année','type="number" min="1900" max="'+(new Date().getFullYear()+1)+'" placeholder="2021"')+input('km','Kilométrage (km)','type="number" min="0" max="2000000" placeholder="48700"')+
@@ -112,15 +112,45 @@ export async function sellerApp({main,escape:e,money,api}){
       input('power','Puissance','maxlength="30" placeholder="100 ch"')+select('doors','Nombre de portes',['2','3','4','5','6','7'])+
       input('color','Couleur extérieure','list="colors" maxlength="60"')+input('interior','Intérieur','maxlength="60" placeholder="Tissu noir"')+
       input('plate','Immatriculation privée','maxlength="15" placeholder="AA-123-AA"')+'</div><p class="hint">L’immatriculation est visible uniquement dans l’espace vendeur. Les caractéristiques se renseignent ici manuellement.</p></section>'+
-      '<section class="box"><div class="section-heading"><h2>Photos</h2><span id="photo-count">0 / 20</span></div>'+
+      '<section class="box wizard-step" data-step="1" hidden><div class="section-heading"><h2 tabindex="-1">Photos</h2><span id="photo-count">0 / 20</span></div>'+
       '<label class="upload-zone" id="upload-zone"><strong>Ajouter des photos</strong><span>Sélectionnez plusieurs images ou glissez-les ici</span><span class="hint">JPEG, PNG, WebP · 20 photos maximum</span><input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>'+
       '<p id="upload-status" role="status"></p><div id="photos" class="photo-editor"></div><p class="hint">La première photo est la couverture. Déplacez les photos avec les boutons ou par glisser-déposer.</p></section>'+
-      '<section class="box"><h2>Équipements et options</h2><label class="field">Rechercher ou créer un équipement<input id="equipment-input" type="text" list="equipment-list" placeholder="Caméra de recul, CarPlay…" maxlength="100" autocomplete="off"></label><div class="option-add"><button type="button" class="button light" id="add-equipment">Ajouter l’équipement</button><span class="hint">Validez aussi avec Entrée.</span></div><datalist id="equipment-list"></datalist><div id="extras" class="equipment-chips"></div></section>'+
-      '<section class="box"><h2>Prix et description</h2>'+input('price','Prix de vente (€)','type="number" min="1" max="10000000" placeholder="11990"')+
-      '<label class="field">Description<textarea name="description" rows="6" maxlength="10000" placeholder="État général, entretien, points forts…">'+e(car?.description||'')+'</textarea></label></section></div>'+
-      '<aside class="box publish-panel"><h2>Votre annonce</h2><div id="mini-preview"></div><p class="hint">Pour publier, ajoutez au moins une photo et complétez les caractéristiques et le prix.</p><label class="field">Statut après enregistrement<select name="status">'+Object.entries(labels).map(([value,label])=>'<option value="'+value+'" '+(value===(car?.status||'brouillon')?'selected':'')+'>'+label+'</option>').join('')+'</select></label><button type="submit" class="button" id="save">Enregistrer</button><button type="button" class="button light" id="publish">Publier l’annonce</button><p id="feedback" role="status" tabindex="-1"></p><p class="hint">Les modifications enregistrées sont partagées entre vos appareils.</p></aside></form>'+
+      '<section class="box wizard-step" data-step="2" hidden><h2 tabindex="-1">Équipements et options</h2><label class="field">Rechercher ou créer un équipement<input id="equipment-input" type="text" list="equipment-list" placeholder="Caméra de recul, CarPlay…" maxlength="100" autocomplete="off"></label><div class="option-add"><button type="button" class="button light" id="add-equipment">Ajouter l’équipement</button><span class="hint">Validez aussi avec Entrée.</span></div><datalist id="equipment-list"></datalist><div id="extras" class="equipment-chips"></div></section>'+
+      '<section class="box wizard-step" data-step="3" hidden><h2 tabindex="-1">Prix et description</h2>'+input('price','Prix de vente (€)','type="number" min="1" max="10000000" placeholder="11990"')+
+      '<label class="field">Description<textarea name="description" rows="6" maxlength="10000" placeholder="État général, entretien, points forts…">'+e(car?.description||'')+'</textarea></label></section>'+
+      '<section class="box publish-panel wizard-step" data-step="4" hidden><h2 tabindex="-1">Vérifier et publier</h2><div id="mini-preview"></div><p class="hint">Pour publier, ajoutez au moins une photo et complétez les caractéristiques et le prix.</p><label class="field">Statut après enregistrement<select name="status">'+Object.entries(labels).map(([value,label])=>'<option value="'+value+'" '+(value===(car?.status||'brouillon')?'selected':'')+'>'+label+'</option>').join('')+'</select></label><button type="submit" class="button" id="save">Enregistrer ce statut</button><button type="button" class="button light" id="publish">Publier l’annonce</button><p class="hint">Les modifications enregistrées sont partagées entre vos appareils.</p></section></div><p id="feedback" role="status" tabindex="-1"></p><div class="wizard-actions"><button type="button" class="button light" id="step-prev">Précédent</button><button type="button" class="button" id="step-next">Continuer</button><button type="submit" class="text-button" id="save-draft">Enregistrer un brouillon</button><p class="hint">Votre saisie reste disponible pendant le passage d’une étape à l’autre. Enregistrez pour la retrouver sur un autre appareil.</p></div></form>'+
       '<datalist id="brands">'+Object.keys(brands).map(b=>'<option value="'+e(b)+'">').join('')+'</datalist><datalist id="models"></datalist><datalist id="colors">'+['Noir','Blanc','Gris','Argent','Bleu','Rouge','Vert','Beige','Marron','Orange','Jaune'].map(c=>'<option value="'+c+'">').join('')+'</datalist>');
     const form=main.querySelector('#vehicle-form'), photoInput=main.querySelector('#photo-input');
+    const steps=[...form.querySelectorAll('[data-step]')];
+    const stepNames=['Le véhicule','Les photos','Les équipements','Prix et description','Vérifier et publier'];
+    let currentStep=0;
+    function showStep(index,focus=true){
+      if(uploading||saving){alertBox('Attendez la fin de l’envoi ou de l’enregistrement.');return;}
+      currentStep=index;
+      steps.forEach((section,i)=>section.hidden=i!==index);
+      form.querySelector('#step-label').textContent='Étape '+(index+1)+' sur 5 · '+stepNames[index];
+      form.querySelector('#step-progress').value=index+1;
+      form.querySelector('#step-prev').hidden=index===0;
+      form.querySelector('#step-next').hidden=index===4;
+      if(focus){steps[index].querySelector('h2').focus();steps[index].scrollIntoView({block:'start',behavior:'smooth'});}
+    }
+    function validateFields(fields){
+      for(const field of fields){
+        if(!field.checkValidity()){
+          const section=field.closest('[data-step]');
+          if(section)showStep(Number(section.dataset.step),false);
+          field.focus();field.reportValidity();return false;
+        }
+      }
+      return true;
+    }
+    form.querySelector('#step-prev').onclick=()=>showStep(currentStep-1);
+    form.querySelector('#step-next').onclick=()=>{
+      if(validateFields(steps[currentStep].querySelectorAll('input[name],select[name],textarea[name]'))){
+        if(currentStep===2)addPendingEquipment();
+        showStep(currentStep+1);
+      }
+    };
     // Native select values are strings, including doors.
     if(car?.doors) form.elements.doors.value=String(car.doors);
     const suggest=()=>{main.querySelector('#models').innerHTML=(brands[form.elements.brand.value]||[]).map(m=>'<option value="'+e(m)+'">').join('');};
@@ -168,7 +198,7 @@ export async function sellerApp({main,escape:e,money,api}){
       const feedback=main.querySelector('#upload-status');
       if(selectedPhotos.length+batch.length>20){feedback.textContent='Vous pouvez ajouter encore '+(20-selectedPhotos.length)+' photo(s). Sélectionnez moins de fichiers.';return;}
       if(!batch.length)return;
-      uploading=true;photoInput.disabled=true;main.querySelector('#save').disabled=true;main.querySelector('#publish').disabled=true;
+      uploading=true;form.querySelector('#save-draft').disabled=true;photoInput.disabled=true;main.querySelector('#save').disabled=true;main.querySelector('#publish').disabled=true;
       const failures=[];
       for(let i=0;i<batch.length;i++){
         feedback.textContent='Préparation et envoi de la photo '+(i+1)+' sur '+batch.length+'…';
@@ -178,7 +208,7 @@ export async function sellerApp({main,escape:e,money,api}){
           selectedPhotos.push(data.photo);formDirty=true;renderPhotos();
         }catch(error){failures.push(batch[i].name+' — '+error.message);}
       }
-      uploading=false;photoInput.disabled=false;photoInput.value='';main.querySelector('#save').disabled=false;main.querySelector('#publish').disabled=false;
+      uploading=false;form.querySelector('#save-draft').disabled=false;photoInput.disabled=false;photoInput.value='';main.querySelector('#save').disabled=false;main.querySelector('#publish').disabled=false;
       feedback.textContent=failures.length ? failures.join(' · ')+'. Sélectionnez de nouveau ces photos pour réessayer.' : batch.length+' photo(s) ajoutée(s).';
     }
     photoInput.onchange=()=>upload(photoInput.files);
@@ -186,11 +216,14 @@ export async function sellerApp({main,escape:e,money,api}){
     drop.ondragover=event=>{event.preventDefault();drop.classList.add('drag-over');};
     drop.ondragleave=()=>drop.classList.remove('drag-over');
     drop.ondrop=event=>{event.preventDefault();drop.classList.remove('drag-over');upload(event.dataTransfer.files);};
-    main.querySelector('#publish').onclick=()=>{form.elements.status.value='disponible';form.requestSubmit();};
+    main.querySelector('#publish').onclick=()=>{form.elements.status.value='disponible';form.requestSubmit(form.querySelector('#save'));};
     form.onsubmit=async event=>{
       event.preventDefault();if(uploading || saving)return;
+      if(!event.submitter && currentStep<4){form.querySelector('#step-next').click();return;}
+      if(!validateFields(form.querySelectorAll('input[name],select[name],textarea[name]')))return;
       addPendingEquipment();
       const values=Object.fromEntries(new FormData(form));
+      if(event.submitter?.id==='save-draft')values.status='brouillon';
       if(['disponible','reserve'].includes(values.status)){
         if(!values.year||values.km===''||!values.price||!values.type||!values.fuel||!values.gearbox||!selectedPhotos.length){alertBox('Pour publier, complétez l’année, le kilométrage, le prix, le type, la motorisation, la boîte et ajoutez au moins une photo.');return;}
       }
@@ -204,7 +237,7 @@ export async function sellerApp({main,escape:e,money,api}){
       finally{saving=false;if(form.isConnected)buttonsBusy(form,false);}
     };
     function addPendingEquipment(){if(optionInput.value.trim())addExtra();}
-    renderExtras();renderPhotos();
+    renderExtras();renderPhotos();showStep(0,false);
   }
   async function compress(file){
     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Choisissez une image JPEG, PNG ou WebP.');

@@ -11,3 +11,32 @@ body{font-size:16px}.ref,.kicker{font-size:12px}.chips span,.tag{font-size:13px}
 @media(max-width:400px){.vehicle-form .form-grid{grid-template-columns:1fr}.seller-toolbar{grid-template-columns:1fr}.photo-editor{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .login-box{max-width:480px;margin:30px auto}.login-box h1{font-size:56px}.login-box form{display:grid;gap:15px;margin-top:22px}.login-box .field input{font-size:16px}.login-box .hint{margin-top:18px}
 .migration-note{background:#fff0bd;color:#554110;padding:14px 18px;border-radius:7px;margin:14px 0 20px;font-size:15px}
+
+/* Seller flow: one focused step and touch-friendly controls. */
+.vehicle-form{display:block;max-width:850px;margin-inline:auto;padding-bottom:24px}
+.wizard-step[hidden],.wizard-actions [hidden]{display:none!important}
+.wizard-step{scroll-margin-top:24px}
+.wizard-step h2:focus{outline:none}
+.wizard-progress{margin-bottom:20px}
+.wizard-progress p{font-weight:700;margin-bottom:10px}
+.wizard-progress progress{width:100%;height:10px;accent-color:#384717}
+.vehicle-form .publish-panel{position:static}
+.wizard-actions{position:sticky;bottom:0;z-index:5;display:flex;flex-wrap:wrap;gap:12px;padding:16px 0;background:#f7f7f2;border-top:1px solid #d9dccf;margin-top:20px}
+.wizard-actions .button{flex:1;min-height:48px}
+.wizard-actions .text-button{flex-basis:100%;min-height:44px}
+.wizard-actions .hint{width:100%;margin:0;font-size:12px}
+.vehicle-form input,.vehicle-form select,.vehicle-form textarea{font-size:16px;min-height:48px}
+.photo-tools button{min-height:44px}
+.equipment-chip,.seller-car .button,.seller-car select{min-height:44px}
+@media(max-width:620px){
+ .vehicle-form .box{padding:20px 16px}
+ .vehicle-form .form-grid{grid-template-columns:1fr}
+ .seller-heading h1{font-size:38px}
+ .wizard-actions{padding-bottom:max(12px,env(safe-area-inset-bottom));gap:8px}
+ .wizard-actions .hint{display:none}
+ .upload-zone{min-height:150px}
+ .photo-editor{grid-template-columns:1fr 1fr;gap:10px}
+ .photo-tools{flex-wrap:wrap}
+ .photo-tools button{flex:1;min-width:45%}
+ .photo-tools button:last-child{flex-basis:100%}
+}
