@@ -1,3 +1,4 @@
+import { loginForm, signOut } from './data.js';
 const labels={brouillon:'Brouillon',disponible:'Disponible',reserve:'Réservé',vendu:'Vendu',archive:'Archivé'};
 const brands={
   Peugeot:['108','208','308','408','2008','3008','5008','Partner','Rifter'],
@@ -24,7 +25,7 @@ export async function sellerApp({main,escape:e,money,api}){
   document.title='Espace vendeur · Autodeal 94';
   const session=await api('/api/session');
   if(!session.seller){
-    main.innerHTML='<section class="wrap admin"><span class="kicker">Autodeal 94</span><h1>Espace vendeur</h1><p>Connectez-vous avec le compte autorisé pour gérer le catalogue.</p><a class="button" target="_top" href="/signin-with-chatgpt?return_to=%2F%3Fespace%3Dvendeur">Se connecter</a></section>';
+    await loginForm({main,escape:e});
     return;
   }
   let vehicles=[], equipment=[], phone='', selectedPhotos=[], selectedExtras=[], formDirty=false, saving=false;
@@ -33,7 +34,9 @@ export async function sellerApp({main,escape:e,money,api}){
   window.addEventListener('beforeunload',unload);
   async function load(){const data=await api('/api/admin/vehicles');vehicles=data.vehicles;equipment=data.equipment;phone=data.phone;}
   function shell(content){
-    main.innerHTML='<div class="wrap seller"><div class="seller-top"><a href="./">Voir le site</a><a href="/signout-with-chatgpt?return_to=/" target="_top">Se déconnecter</a></div>'+content+'</div>';
+    main.innerHTML='<div class="wrap seller"><div class="seller-top"><a href="./">Voir le site</a><button type="button" class="text-button" id="logout">Se déconnecter</button></div>'+content+'</div>';
+    main.querySelector('#logout').onclick=signOut;
+    window.scrollTo({top:0,behavior:'instant'});
   }
   function alertBox(message){const el=main.querySelector('#feedback');if(el){el.textContent=message;el.focus();}}
   function buttonsBusy(form,busy){form.querySelectorAll('button,input,select,textarea').forEach(control=>control.disabled=busy);}
@@ -99,6 +102,7 @@ export async function sellerApp({main,escape:e,money,api}){
     const input=(name,label,opts='')=>'<label class="field">'+label+'<input name="'+name+'" '+opts+' value="'+e(car?.[name]??'')+'"></label>';
     const select=(name,label,options)=>'<label class="field">'+label+'<select name="'+name+'"><option value="">Sélectionner</option>'+options.map(value=>'<option '+(value===car?.[name]?'selected':'')+'>'+e(value)+'</option>').join('')+'</select></label>';
     shell('<button class="text-button" id="back-list">Retour aux véhicules</button><div class="seller-heading"><div><span class="kicker">'+(car?e(car.ref):'Nouvelle annonce')+'</span><h1>'+(car?'Modifier le véhicule':'Ajouter un véhicule')+'</h1></div></div>'+
+      (car?.pendingPhotoCount?'<p class="migration-note">Une photo de cette annonce doit être réimportée après le transfert. Ajoutez-la dans la section Photos avant de publier.</p>':'')+
       '<form id="vehicle-form" class="vehicle-form"><div class="editor-main">'+
       '<section class="box"><h2>Le véhicule</h2><div class="form-grid">'+
       input('brand','Marque *','required list="brands" maxlength="60" autocomplete="off"')+input('model','Modèle *','required list="models" maxlength="100" autocomplete="off"')+
@@ -170,9 +174,7 @@ export async function sellerApp({main,escape:e,money,api}){
         feedback.textContent='Préparation et envoi de la photo '+(i+1)+' sur '+batch.length+'…';
         try{
           const blob=await compress(batch[i]);
-          const response=await fetch('/api/admin/photos',{method:'POST',headers:{'Content-Type':blob.type},body:blob});
-          const data=await response.json();
-          if(!response.ok)throw new Error(data.error||'Envoi impossible.');
+          const data={photo:await api.uploadPhoto(blob)};
           selectedPhotos.push(data.photo);formDirty=true;renderPhotos();
         }catch(error){failures.push(batch[i].name+' — '+error.message);}
       }

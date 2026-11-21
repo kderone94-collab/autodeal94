@@ -1,1 +1,17 @@
-{"name":"autodeal94","version":"2.0.0","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","dev":"node scripts/dev.mjs","db:generate":"drizzle-kit generate"},"devDependencies":{"drizzle-kit":"^0.31.0","drizzle-orm":"^0.44.0"}}
+{
+  "name": "autodeal94",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
+    "@fontsource/barlow-condensed": "^5.2.0",
+    "@fontsource/dm-sans": "^5.2.0"
+  },
+  "devDependencies": {"vite": "^7.2.0"}
+}

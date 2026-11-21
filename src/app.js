@@ -1,6 +1,13 @@
 'use strict';
 
 import { sellerApp } from './seller.js';
+import { api } from './data.js';
+import '@fontsource/barlow-condensed/latin-700.css';
+import '@fontsource/barlow-condensed/latin-800.css';
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-500.css';
+import '@fontsource/dm-sans/latin-600.css';
+import '@fontsource/dm-sans/latin-700.css';
 let contactNumber = '';
 let cars = [];
 let current;
@@ -72,12 +79,6 @@ function detail(car) {
   <div class="actions">${whatsappButton}${phoneButton}</div></section></div></section>${contact()}`;
 }
 
-async function api(path,options={}) {
-  const response=await fetch(path,{...options,headers:{'Content-Type':'application/json',...options.headers}});
-  const data=await response.json();
-  if (!response.ok) throw new Error(data.error || 'Chargement impossible.');
-  return data;
-}
 function contacts() {
   document.querySelectorAll('[data-contact]').forEach(link=>{
     const phone=link.dataset.contact==='phone';

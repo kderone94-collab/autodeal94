@@ -1,55 +1,48 @@
 # Autodeal 94
 
-Catalogue et espace vendeur avec base partagée et photos. La version hébergée utilise Cloudflare D1 (annonces et équipements), R2 (images) et la connexion ChatGPT du compte vendeur.
+Site vitrine et espace vendeur hébergés sur Vercel, avec Supabase pour la base, les photos et la connexion.
 
-## Utilisation
+## Gestion du catalogue
 
-Ouvrir `/?espace=vendeur`, puis « Ajouter un véhicule ». La marque et le modèle acceptent des suggestions et des valeurs libres. Les types, motorisations et transmissions sont proposés dans des menus.
+Ouvrir `/?espace=vendeur`. Lors de la première connexion, saisir l’adresse autorisée et choisir un mot de passe, puis confirmer l’adresse avec l’e-mail reçu. Les connexions suivantes utilisent cette adresse et ce mot de passe.
 
-Ajouter jusqu’à 20 photos JPEG, PNG ou WebP. Les images sont redimensionnées à 1800 px maximum et compressées avant l’envoi. La première photo est la couverture. Utiliser « Avant », « Après » ou le glisser-déposer pour changer l’ordre.
+Le vendeur peut créer des brouillons, publier, modifier les prix, réserver, marquer comme vendu, archiver et supprimer ses annonces. Chaque voiture reçoit une référence unique. Les états disponibles et réservés sont visibles dans le catalogue public.
 
-Saisir un équipement puis valider avec Entrée ou « Ajouter l’équipement ». Les équipements enregistrés deviennent des suggestions pour les annonces suivantes.
+Le formulaire accepte jusqu’à 20 photos JPEG, PNG ou WebP, les compresse avant l’envoi et permet de choisir la couverture et de modifier l’ordre. Les équipements saisis sont proposés dans les annonces suivantes. L’immatriculation reste privée. Les caractéristiques se renseignent manuellement.
 
-Enregistrer en brouillon pour compléter plus tard ou publier après avoir ajouté une photo, l’année, le kilométrage, le type, la motorisation, la boîte et le prix. Les statuts disponibles et réservés sont visibles dans le catalogue. Les brouillons, vendus et archives restent dans l’espace vendeur.
-
-La suppression retire l’annonce du catalogue et de la liste. Une suppression logique conserve les enregistrements dans la base. Les objets image conservés ne sont accessibles au public que s’ils appartiennent à une annonce publiée.
-
-Les coordonnées WhatsApp et téléphone se renseignent dans « Coordonnées et exemples ». Le numéro doit être international (+33…).
-
-L’immatriculation est privée et les caractéristiques se renseignent manuellement. Aucun service de recherche de plaques n’est connecté.
+Le téléphone et WhatsApp se configurent dans « Coordonnées et exemples ».
 
 ## Développement
 
-Node.js 24 recommandé.
+Node.js 22 ou 24.
 
 ```sh
 npm ci
-npm run build
 npm run dev
+npm run build
 ```
 
-La prévisualisation locale utilise une base SQLite et des fichiers sous `.local-data/`. Elle simule un compte vendeur pour le développement. Le serveur de développement ne doit jamais être déployé ni utilisé comme serveur public.
+- `src/app.js` — catalogue et fiches
+- `src/seller.js` — espace vendeur
+- `src/data.js` — connexion, base et stockage Supabase
+- `src/supabase-config.js` — URL et clé publique du projet
+- `src/style.css` — mise en page
+- `public/img/` — photos d’exemple
+- `supabase/migrations/` — schéma, fonctions et règles d’accès
+- `vercel.json` — configuration Vercel
 
-- `public/index.html` — structure, navigation
-- `public/style.css` — mise en page, couleurs, mobile
-- `public/app.js` — catalogue, fiches, galerie, WhatsApp
-- `public/seller.js` — formulaire et gestion vendeur
-- `public/img/` — photos de démonstration
-- `worker/index.js` — API, validation, contrôle d’accès
-- `db/schema.js` — schéma de la base
-- `drizzle/` — migrations SQL générées
-- `scripts/build.mjs` — compilation du Worker avec ses fichiers statiques
+La clé publishable est destinée au navigateur. La sécurité repose sur les autorisations de la base et du stockage. Aucune clé service_role n’est utilisée dans le site.
 
-Les modifications des annonces passent par l’espace vendeur et prennent effet immédiatement. Les modifications du code demandent une nouvelle compilation et un déploiement.
+## Déploiement
 
-## Hébergement
+Importer ce dépôt dans Vercel avec le preset Vite. La commande de build est `npm run build` et le résultat se trouve dans `dist`. Les publications suivantes peuvent partir des commits de la branche `main`.
 
-La version actuelle est déployée sur ChatGPT Sites. Le manifeste déclare `DB` pour D1 et `BUCKET` pour R2. Les migrations du dossier `drizzle/` sont appliquées au déploiement. En cas d’évolution du schéma, lancer `npm run db:generate` et conserver l’historique des migrations.
+Le projet Supabase correspondant doit disposer des migrations de `supabase/migrations/`. Dans Authentication → URL Configuration, déclarer l’URL Vercel de production comme Site URL et autoriser `https://VOTRE-DOMAINE/?espace=vendeur` comme destination de confirmation.
 
-Configurer côté serveur `SELLER_EMAIL`, adresse du compte autorisé à gérer le parc. Les en-têtes d’identité doivent provenir d’un frontal authentifiant de confiance. Les requêtes de gestion vérifient cette identité et leur origine. `ADMIN_API_TOKEN` est une clé secrète de maintenance facultative, jamais intégrée au navigateur ni au dépôt.
+Les adresses autorisées à vendre figurent dans `autodeal_private.seller_emails`. Seul l’administrateur Supabase peut modifier cette liste. Le compte doit avoir confirmé son adresse. La base n’autorise aucune lecture directe des annonces ni de leur immatriculation aux visiteurs. Une fonction de catalogue retourne uniquement les annonces publiées et masque l’immatriculation. Les actions d’écriture vérifient les droits du vendeur et la révision de l’annonce.
 
-Cette version nécessite un serveur Worker et les stockages associés. GitHub conserve les sources. Un hébergement GitHub Pages ou un déploiement Vercel purement statique ne fournit pas les services nécessaires à la base et aux photos.
+Les photos sont stockées dans le bucket privé `vehicle-photos`. Le catalogue utilise des liens temporaires. Les droits de lecture contrôlent qu’une photo est publiée ou que la demande provient du vendeur.
 
-Le catalogue reste privé selon les paramètres actuels du site. Une ouverture au public demande de modifier son audience. Le contrôle d’accès de l’espace vendeur reste indépendant.
+Les changements du catalogue prennent effet dès l’enregistrement. Les changements de code demandent une nouvelle publication Vercel. Les annonces et les photos chargées en ligne sont conservées dans Supabase, séparément du dépôt GitHub.
 
-Photos d’exemple — Unsplash (bannière), Caradisiac (208), Click Dealer (Clio), Arabavs (Golf), AutoUncle (Yaris), Van Poelgeest (BMW), Autocar India (Audi). Remplacer les illustrations par les photos du concessionnaire pour ses annonces réelles.
+Photos d’exemple — Unsplash, Caradisiac, Click Dealer, Arabavs, AutoUncle, Van Poelgeest et Autocar India. Remplacer ces illustrations par les photos des véhicules réels.

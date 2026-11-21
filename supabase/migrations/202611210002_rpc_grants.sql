@@ -1,0 +1,10 @@
+revoke all on function public.autodeal_admin_catalog() from public, anon, authenticated;
+revoke all on function public.autodeal_save_vehicle(jsonb,bigint,integer,uuid) from public, anon, authenticated;
+revoke all on function public.autodeal_delete_vehicle(bigint,integer) from public, anon, authenticated;
+revoke all on function public.autodeal_save_phone(text) from public, anon, authenticated;
+revoke all on function public.autodeal_photo_is_used(text) from public, anon, authenticated;
+grant execute on function public.autodeal_admin_catalog() to authenticated;
+grant execute on function public.autodeal_save_vehicle(jsonb,bigint,integer,uuid) to authenticated;
+grant execute on function public.autodeal_delete_vehicle(bigint,integer) to authenticated;
+grant execute on function public.autodeal_save_phone(text) to authenticated;
+grant execute on function public.autodeal_photo_is_used(text) to authenticated;
