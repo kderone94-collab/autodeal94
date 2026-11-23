@@ -1,5 +1,5 @@
 import { loginForm, signOut } from './data.js';
-const labels={brouillon:'Brouillon',disponible:'Disponible',reserve:'Réservé',vendu:'Vendu',archive:'Archivé'};
+const labels={brouillon:'Brouillon',disponible:'Disponible',reserve:'Réservé',prochainement:'Prochainement disponible',vendu:'Vendu',archive:'Archivé'};
 const brands={
   Peugeot:['108','208','308','408','2008','3008','5008','Partner','Rifter'],
   Renault:['Clio','Captur','Mégane','Scénic','Austral','Arkana','Twingo','Kangoo'],

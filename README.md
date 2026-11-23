@@ -46,3 +46,14 @@ Les photos sont stockées dans le bucket privé `vehicle-photos`. Le catalogue u
 Les changements du catalogue prennent effet dès l’enregistrement. Les changements de code demandent une nouvelle publication Vercel. Les annonces et les photos chargées en ligne sont conservées dans Supabase, séparément du dépôt GitHub.
 
 Photos d’exemple — Unsplash, Caradisiac, Click Dealer, Arabavs, AutoUncle, Van Poelgeest et Autocar India. Remplacer ces illustrations par les photos des véhicules réels.
+
+
+## Catalogue et services
+
+Le site présente l’ancienneté de 13 ans, l’agrément SIV / service Carte Grise, les visites uniquement sur rendez-vous et l’adresse du point de vente à Valenton. Le service mandataire dispose d’une fiche `/?service=mandataire`.
+
+Dans l’espace vendeur, sélectionnez **Prochainement disponible** pour annoncer une arrivée ou **Vendu** pour conserver une voiture vendue en fin de catalogue. Brouillons, annonces archivées et annonces supprimées restent masqués au public. Les photos des statuts publics sont accessibles via des liens signés Supabase ; les plaques restent privées.
+
+La migration `catalog_availability_statuses` ajoute le statut, étend le catalogue public et l’accès aux photos, et conserve le contrôle vendeur sur les modifications.
+
+Vérification du catalogue : `npm install --no-save --package-lock=false jsdom` puis `node tests/catalog.test.mjs`.
