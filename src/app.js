@@ -1,5 +1,6 @@
 'use strict';
 
+import { legalPage } from './legal.js';
 import { sellerApp } from './seller.js';
 import { api } from './data.js';
 import '@fontsource/barlow-condensed/latin-700.css';
@@ -126,6 +127,7 @@ function contacts() {
 }
 async function boot() {
   try {
+    if(params.has('page')&&legalPage({main,slug:params.get('page'),metadata:pageMetadata}))return;
     if(params.get('espace')==='vendeur'){
       document.querySelector('meta[name="robots"]').content='noindex,nofollow';
       await sellerApp({main,escape,money,api});

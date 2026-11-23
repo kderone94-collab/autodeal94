@@ -1,11 +1,12 @@
 import {JSDOM} from 'jsdom';
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
+import {legalPage} from '../src/legal.js';
 const source=readFileSync('src/app.js','utf8').replace(/^import .*;\n/gm,'');
 const sample=(id,status,price)=>({id,ref:'AD94-'+id,status,brand:'Peugeot',model:id,trim:'Allure',year:2021,km:50000,price,fuel:'Essence',gearbox:'Manuelle',photos:[{id:'demo-208',url:'/img/208.webp'}],extras:[]});
 async function render(query=''){
 const dom=new JSDOM(readFileSync('index.html','utf8'),{url:'https://autodeal94.vercel.app/'+query,runScripts:'outside-only'});
-dom.window.api=async()=>({phone:'+33612345678',vehicles:[sample('sold','vendu',1000),sample('soon','prochainement',3000),sample('available','disponible',20000)]});
+dom.window.legalPage=legalPage;dom.window.api=async()=>({phone:'+33612345678',vehicles:[sample('sold','vendu',1000),sample('soon','prochainement',3000),sample('available','disponible',20000)]});
 dom.window.requestAnimationFrame=()=>{};dom.window.eval(source);await new Promise(r=>setTimeout(r,0));return dom.window;
 }
 const w=await render();const d=w.document;
@@ -26,3 +27,6 @@ const service=(await render('?service=mandataire')).document;assert.match(servic
 const sold=(await render('?vehicule=sold')).document;assert.match(decodeURIComponent(sold.querySelector('[data-contact="whatsapp"]').href),/véhicule similaire/);
 assert.ok(!d.querySelector('a[href="?espace=vendeur"]'));
 console.log('PASS: trust copy, all status groups, sold-last sorting, filter, service page/WhatsApp, maps, hidden seller link');
+
+for(const slug of ['confidentialite','cookies','mentions-legales']){const page=(await render('?page='+slug)).document;assert.equal(page.querySelectorAll('article.legal-page').length,1);assert.equal(page.querySelectorAll('h1').length,1);assert.equal(page.querySelectorAll('.footer-columns>section').length,2);assert.equal(page.querySelectorAll('.footer-legal-links a').length,3);}
+console.log('PASS: footer sections, legal links and all three legal pages');
