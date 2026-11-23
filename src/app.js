@@ -41,19 +41,27 @@ function directions(){
   return `<div class="actions directions"><a class="button light" target="_blank" rel="noopener noreferrer" href="https://www.waze.com/ul?q=${encodeURIComponent(address)}&navigate=yes">Itinéraire Waze ↗</a><a class="button light" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}">Google Maps ↗</a></div>`;
 }
 function contact() {
-  return `<section class="contact" id="contact"><div class="wrap"><div><span class="kicker">Rencontrons-nous à Valenton</span><h2>Votre prochaine auto<br>commence par un échange.</h2><p>Visites uniquement sur rendez-vous. Contactez-nous avant de vous déplacer.</p><address>${address}</address>${directions()}</div><div class="actions">${whatsappButton}<a class="button dark" href="#contact" data-contact="phone">Prendre rendez-vous</a></div></div></section>`;
+  return `<section class="contact" id="contact"><div class="wrap"><div><span class="kicker">Rencontrons-nous à Valenton</span><h2>Visiter notre parc automobile à Valenton</h2><p>Visites uniquement sur rendez-vous. Contactez-nous avant de vous déplacer.</p><address>${address}</address>${directions()}</div><div class="actions">${whatsappButton}<a class="button dark" href="#contact" data-contact="phone">Prendre rendez-vous</a></div></div></section>`;
 }
 function serviceCard(){
-  return `<a class="card service-card" href="?service=mandataire"><div class="service-art"><span class="tag">Service sur mesure</span><span aria-hidden="true">↗</span><p>Vous cherchez.<br>Nous trouvons.</p></div><div class="card-body"><span class="ref">Mandataire automobile</span><h3>Le bon véhicule,<br>même hors de notre parc.</h3><p>Définissez vos critères et votre budget. Nous vous accompagnons dans la recherche de votre prochaine voiture.</p><div class="card-bottom"><strong>Parlons de votre projet</strong><span>Découvrir →</span></div></div></a>`;
+  return `<a class="card service-card" href="?service=mandataire"><div class="service-art"><span class="tag">Service sur mesure</span><span aria-hidden="true">↗</span><p>Vous cherchez.<br>Nous trouvons.</p></div><div class="card-body"><span class="ref">Mandataire automobile</span><h3>Mandataire automobile à Valenton</h3><p>Définissez vos critères et votre budget. Nous vous accompagnons dans la recherche de votre prochaine voiture.</p><div class="card-bottom"><strong>Parlons de votre projet</strong><span>Découvrir →</span></div></div></a>`;
 }
 function serviceDetail(){
-  document.title='Mandataire automobile · Autodeal 94';
-  main.innerHTML=`<section class="wrap detail service-detail"><a class="back" href="./#stock">Retour au catalogue</a><span class="kicker">Mandataire automobile</span><h1>Votre recherche.<br><em>Notre expérience.</em></h1><p>Vous ne trouvez pas votre voiture dans notre parc ? Profitez de plus de 13 ans d’expérience pour être accompagné dans votre projet automobile.</p><div class="service-steps"><section class="box"><span class="ref">01 · Votre projet</span><h2>Définir vos critères</h2><p>Marque, modèle, usage, équipements et budget : nous échangeons sur vos priorités.</p></section><section class="box"><span class="ref">02 · Notre recherche</span><h2>Trouver les bonnes pistes</h2><p>Nous recherchons des véhicules correspondant à vos attentes et vous présentons les possibilités.</p></section><section class="box"><span class="ref">03 · Votre décision</span><h2>Avancer en confiance</h2><p>Nous précisons ensemble le périmètre de notre accompagnement et ses conditions avant tout engagement.</p></section></div><div class="actions">${whatsappButton}${phoneButton}</div></section>${contact()}`;
+  pageMetadata('Mandataire automobile à Valenton (94) | Autodeal 94','Confiez votre recherche de voiture à Autodeal 94, mandataire automobile à Valenton. Un accompagnement adapté à vos critères et à votre budget.','/?service=mandataire');
+  main.innerHTML=`<section class="wrap detail service-detail"><a class="back" href="./#stock">Retour au catalogue</a><span class="kicker">Mandataire automobile</span><h1>Mandataire automobile<br><em>à Valenton</em></h1><p>Vous ne trouvez pas votre voiture dans notre parc ? Profitez de plus de 13 ans d’expérience pour être accompagné dans votre projet automobile.</p><div class="service-steps"><section class="box"><span class="ref">01 · Votre projet</span><h2>Définir vos critères</h2><p>Marque, modèle, usage, équipements et budget : nous échangeons sur vos priorités.</p></section><section class="box"><span class="ref">02 · Notre recherche</span><h2>Trouver les bonnes pistes</h2><p>Nous recherchons des véhicules correspondant à vos attentes et vous présentons les possibilités.</p></section><section class="box"><span class="ref">03 · Votre décision</span><h2>Avancer en confiance</h2><p>Nous précisons ensemble le périmètre de notre accompagnement et ses conditions avant tout engagement.</p></section></div><div class="actions">${whatsappButton}${phoneButton}</div></section>${contact()}`;
+}
+function pageMetadata(title,description,path='/'){
+  document.title=title;
+  document.querySelector('meta[name="description"]').content=description;
+  document.querySelector('link[rel="canonical"]').href='https://autodeal94.vercel.app'+path;
+  document.querySelector('meta[property="og:title"]').content=title;
+  document.querySelector('meta[property="og:description"]').content=description;
 }
 function home() {
-  main.innerHTML = `<section class="hero"><div class="wrap"><span class="kicker">Véhicules d’occasion · Val-de-Marne</span><h1>Vente automobile<br><em>depuis plus de 13 ans.</em></h1><p>Une sélection rigoureuse, des véhicules inspectés et un accompagnement de proximité. Choisissez votre prochaine voiture avec la confiance d’un professionnel installé depuis 13 ans.</p><div class="actions"><a href="#stock" class="button">Voir les véhicules </a><a href="#contact" class="button outline" data-contact="whatsapp">WhatsApp</a></div></div></section>
+  pageMetadata('Voitures d’occasion à Valenton (94) | Autodeal 94','Autodeal 94 : voitures d’occasion inspectées à Valenton depuis 13 ans. Vente automobile, mandataire et Carte Grise. Visites uniquement sur rendez-vous.');
+  main.innerHTML = `<section class="hero"><div class="wrap"><span class="kicker">Véhicules d’occasion · Val-de-Marne</span><h1>Voitures d’occasion<br><em>à Valenton, depuis 13 ans</em></h1><p>Des véhicules sélectionnés avec rigueur et inspectés par votre professionnel automobile dans le Val-de-Marne. Venez découvrir notre parc, uniquement sur rendez-vous.</p><div class="actions"><a href="#stock" class="button">Voir les véhicules </a><a href="#contact" class="button outline" data-contact="whatsapp">WhatsApp</a></div></div></section>
   <div class="ribbon"><div class="wrap"><span>Occasions multimarques</span><span>Visites uniquement sur rendez-vous</span><span>Véhicules inspectés</span></div></div>
-  <section class="wrap trust"><div><span class="kicker">La confiance se construit dans le temps</span><h2>13 ans à vos côtés.</h2></div><p>Une entreprise établie, un interlocuteur direct et des véhicules sélectionnés avec soin. Nous prenons le temps de vous conseiller et de vous présenter chaque voiture sur rendez-vous.</p></section><section class="wrap stock" id="stock"><div class="stock-head"><div><span class="kicker">Le parc Autodeal 94</span><h2>Notre catalogue</h2></div><p class="count" id="count" aria-live="polite"></p></div>
+  <section class="wrap trust" aria-labelledby="trust-title"><div class="trust-intro"><span class="kicker">Autodeal 94 · Val-de-Marne</span><h2 id="trust-title">Votre professionnel automobile à Valenton</h2><p>Depuis 13 ans, nous vous accompagnons dans l’achat de votre voiture avec un interlocuteur direct et des conseils adaptés à votre projet.</p></div><div class="trust-points"><div><span class="trust-number">01</span><div><h3>Une sélection rigoureuse</h3><p>Des véhicules sélectionnés avec soin et inspectés avant leur mise en vente.</p></div></div><div><span class="trust-number">02</span><div><h3>Un contact de proximité</h3><p>Un échange direct pour connaître le véhicule et préparer votre visite sur rendez-vous.</p></div></div><div><span class="trust-number">03</span><div><h3>Vos démarches accompagnées</h3><p>Un service Carte Grise et la recherche sur mesure de votre prochaine voiture.</p></div></div></div></section><section class="wrap stock" id="stock"><div class="stock-head"><div><span class="kicker">Le parc Autodeal 94</span><h2>Nos voitures d’occasion à vendre</h2></div><p class="count" id="count" aria-live="polite"></p></div>
   <form class="filters" role="search"><label>Rechercher<input name="search" type="search" placeholder="Modèle, marque ou référence"></label>
   <label>Disponibilité<select name="status"><option value="">Tout le catalogue</option><option value="disponible">Disponibles</option><option value="reserve">Réservés</option><option value="prochainement">Prochainement disponibles</option><option value="vendu">Vendus</option></select></label><label>Motorisation<select name="fuel"><option value="">Toutes</option><option>Essence</option><option>Diesel</option><option>Hybride</option><option>Hybride rechargeable</option><option>Électrique</option><option>GPL</option></select></label>
   <label>Transmission<select name="gearbox"><option value="">Toutes</option><option>Manuelle</option><option>Automatique</option></select></label>
@@ -74,7 +82,7 @@ function home() {
     const sort = values.get('sort');
     if (sort) results.sort((a,b) => sort === 'year' ? b.year-a.year : a[sort]-b[sort]);
     main.querySelector('#count').textContent = results.length + (results.length === 1 ? ' véhicule' : ' véhicules') + '';
-    const sections=[['disponible','À découvrir dès maintenant'],['reserve','Véhicules réservés'],['prochainement','Prochainement disponibles'],['vendu','Ils ont trouvé leur nouveau propriétaire']];
+    const sections=[['disponible','Véhicules disponibles'],['reserve','Véhicules réservés'],['prochainement','Prochainement disponibles'],['vendu','Véhicules vendus']];
     const showService=!values.get('status')&&!values.get('fuel')&&!values.get('gearbox')&&query.every(word=>normalize('Mandataire automobile service recherche voiture sur mesure').includes(word));
     main.querySelector('#grid').innerHTML=sections.map(([status,title],i)=>{
       const group=results.filter(car=>car.status===status);
@@ -89,8 +97,8 @@ function home() {
   update();
 }
 function detail(car) {
-  document.title = `${car.name} · ${car.ref} · Autodeal 94`;
-  const facts = [['Année',car.year],['Kilométrage',integer.format(car.km)+' km'],['Motorisation',car.fuel],['Transmission',car.gearbox],['Puissance',car.power],['Portes',car.doors]];
+  pageMetadata(`${car.name} ${car.year||''} d’occasion à Valenton | Autodeal 94`,`${car.name} ${car.trim||''}, ${car.year||'année à préciser'}, ${car.km==null?'kilométrage à préciser':integer.format(car.km)+' km'}. ${statusLabels[car.status]}. Découvrez ce véhicule chez Autodeal 94 à Valenton, sur rendez-vous.`, '/?vehicule='+encodeURIComponent(car.id));
+  const facts = [['Année',car.year||'À préciser'],['Kilométrage',car.km==null?'À préciser':integer.format(car.km)+' km'],['Motorisation',car.fuel],['Transmission',car.gearbox],['Puissance',car.power],['Portes',car.doors]];
   main.innerHTML = `<section class="wrap detail"><a class="back" href="./#stock">Retour aux véhicules</a><div class="detail-layout">
   <div>${photo(car)}<div class="gallery">${car.photos.map((p,i)=>'<button type="button" data-gallery="'+i+'" aria-label="Voir la photo '+(i+1)+'"><img src="'+escape(p.url)+'" alt="" loading="lazy"></button>').join('')}</div><p class="notice">${car.photos.some(photo=>photo.id.startsWith('demo-')) ? 'Photo d’illustration · Véhicule de démonstration' : ''}</p><section class="box equipment"><h2>Présentation</h2><p class="description">${escape(car.description || '')}</p><h2>Équipements</h2><div class="chips">${car.extras.map(item => '<span>'+escape(item)+'</span>').join('')}</div></section></div>
   <section class="box"><span class="ref">Référence ${escape(car.ref)}</span><h1>${escape(car.name)}</h1><p class="muted">${escape(car.trim)}</p><p class="detail-status">${statusLabels[car.status]||'Disponible'}</p><p class="price">${car.price?money.format(car.price):'Prix à venir'}</p>
@@ -119,6 +127,7 @@ function contacts() {
 async function boot() {
   try {
     if(params.get('espace')==='vendeur'){
+      document.querySelector('meta[name="robots"]').content='noindex,nofollow';
       await sellerApp({main,escape,money,api});
       return;
     }
@@ -135,6 +144,7 @@ async function boot() {
     }
     else if(params.has('vehicule')) main.innerHTML='<section class="wrap detail"><a class="back" href="./#stock">Retour aux véhicules</a><h2>Fiche indisponible</h2><p>Retrouvez les annonces disponibles dans le catalogue.</p></section>';
     else home();
+    const mobileActions=document.createElement('div');mobileActions.className='mobile-contact';mobileActions.setAttribute('aria-label','Contacter Autodeal 94');mobileActions.innerHTML=phoneButton+whatsappButton;main.append(mobileActions);
     contacts();
     if(location.hash) requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView());
   } catch(error){

@@ -10,13 +10,19 @@ dom.window.requestAnimationFrame=()=>{};dom.window.eval(source);await new Promis
 }
 const w=await render();const d=w.document;
 assert.match(d.querySelector('h1').textContent,/13 ans/);
+assert.match(d.title,/Voitures d’occasion à Valenton/);
+assert.equal(d.querySelector('meta[name="robots"]').content,'index,follow');
+assert.equal(d.querySelectorAll('h1').length,1);
+assert.ok(!d.body.textContent.includes('13 ans à vos côtés'));
+assert.equal(d.querySelectorAll('.mobile-contact [data-contact]').length,2);
+assert.match(d.querySelector('.mobile-contact [data-contact="phone"]').href,/^tel:/);
 assert.deepEqual([...d.querySelectorAll('.card:not(.service-card)')].map(c=>c.className),['card vehicle-disponible','card vehicle-prochainement','card vehicle-vendu']);
 assert.match(d.querySelector('.status-vendu .tag').textContent,/Vendu/);
 assert.equal(d.querySelectorAll('.service-card').length,1);
 const form=d.querySelector('.filters');form.elements.sort.value='price';form.dispatchEvent(new w.Event('change'));assert.match(d.querySelector('.catalog-group:last-child .card').className,/vendu/);
 form.elements.status.value='prochainement';form.dispatchEvent(new w.Event('change'));assert.equal(d.querySelectorAll('.card').length,1);assert.match(d.querySelector('.tag').textContent,/Prochainement/);
 assert.equal(d.querySelectorAll('.directions a').length,2);
-const service=(await render('?service=mandataire')).document;assert.match(service.title,/Mandataire/);assert.match(decodeURIComponent(service.querySelector('[data-contact="whatsapp"]').href),/mandataire automobile/);
+const service=(await render('?service=mandataire')).document;assert.match(service.title,/Mandataire/);assert.equal(service.querySelector('link[rel="canonical"]').getAttribute('href'),'https://autodeal94.vercel.app/?service=mandataire');assert.match(decodeURIComponent(service.querySelector('[data-contact="whatsapp"]').href),/mandataire automobile/);
 const sold=(await render('?vehicule=sold')).document;assert.match(decodeURIComponent(sold.querySelector('[data-contact="whatsapp"]').href),/véhicule similaire/);
 assert.ok(!d.querySelector('a[href="?espace=vendeur"]'));
 console.log('PASS: trust copy, all status groups, sold-last sorting, filter, service page/WhatsApp, maps, hidden seller link');
