@@ -22,7 +22,7 @@ const standardEquipment=['ABS','ESP','Airbags','Apple CarPlay','Android Auto','B
 const types=['Citadine','Berline','SUV / 4x4','Break','Coupé','Cabriolet','Monospace','Utilitaire'];
 const fuels=['Essence','Diesel','Hybride','Hybride rechargeable','Électrique','GPL'];
 export async function sellerApp({main,escape:e,money,api}){
-  document.title='Espace vendeur · Autodeal 94';
+  document.title='Espace vendeur — Autodeal 94';
   const session=await api('/api/session');
   if(!session.seller){
     await loginForm({main,escape:e});
@@ -58,7 +58,7 @@ export async function sellerApp({main,escape:e,money,api}){
       const status=main.querySelector('#seller-status').value;
       const results=vehicles.filter(car=>(!status || car.status===status)&&(car.brand+' '+car.model+' '+car.ref).toLocaleLowerCase('fr').includes(q));
       list.innerHTML=results.map(car=>'<article class="seller-car">'+(car.photos[0]?'<img src="'+e(car.photos[0].url)+'" alt="'+e(car.brand+' '+car.model)+'">':'<div class="no-photo">Photo à ajouter</div>')+
-        '<div class="seller-car-info"><span class="ref">'+e(car.ref)+'</span><h3>'+e(car.brand+' '+car.model)+'</h3><p class="muted">'+e(car.trim)+'</p><p>'+e(car.year??'Année à compléter')+' · '+(car.km===null?'Kilométrage à compléter':new Intl.NumberFormat('fr-FR').format(car.km)+' km')+'</p><span class="status status-'+car.status+'">'+labels[car.status]+'</span></div>'+
+        '<div class="seller-car-info"><span class="ref">'+e(car.ref)+'</span><h3>'+e(car.brand+' '+car.model)+'</h3><p class="muted">'+e(car.trim)+'</p><p>'+e(car.year??'Année à compléter')+' — '+(car.km===null?'Kilométrage à compléter':new Intl.NumberFormat('fr-FR').format(car.km)+' km')+'</p><span class="status status-'+car.status+'">'+labels[car.status]+'</span></div>'+
         '<div class="seller-car-actions"><strong class="price">'+(car.price?money.format(car.price):'Prix à compléter')+'</strong><button class="button light" data-edit="'+car.id+'">Modifier</button><label class="field">Statut<select data-status="'+car.id+'" aria-label="Statut de '+e(car.ref)+'">'+Object.entries(labels).map(([v,l])=>'<option value="'+v+'" '+(v===car.status?'selected':'')+'>'+l+'</option>').join('')+'</select></label><button class="text-button danger" data-delete="'+car.id+'">Supprimer</button></div></article>').join('') || '<section class="empty"><h3>'+(!vehicles.length?'Votre parc est prêt':'Aucune annonce trouvée')+'</h3><p>'+(!vehicles.length?'Ajoutez votre premier véhicule pour commencer.':'Modifiez les critères de recherche.')+'</p></section>';
       list.querySelectorAll('[data-edit]').forEach(button=>button.onclick=()=>edit(vehicles.find(car=>car.id===button.dataset.edit)));
       list.querySelectorAll('[data-status]').forEach(select=>select.onchange=async()=>{
@@ -86,7 +86,7 @@ export async function sellerApp({main,escape:e,money,api}){
   }
   async function remove(car){
     const modal=document.createElement('dialog');
-    modal.innerHTML='<h2>Supprimer cette annonce ?</h2><p>'+e(car.brand+' '+car.model)+' · '+e(car.ref)+'</p><p>Elle sera retirée du catalogue et de votre liste.</p><div class="actions"><button class="button light" id="cancel-delete">Annuler</button><button class="button delete-button" id="confirm-delete">Supprimer l’annonce</button></div><p role="status"></p>';
+    modal.innerHTML='<h2>Supprimer cette annonce ?</h2><p>'+e(car.brand+' '+car.model)+' — '+e(car.ref)+'</p><p>Elle sera retirée du catalogue et de votre liste.</p><div class="actions"><button class="button light" id="cancel-delete">Annuler</button><button class="button delete-button" id="confirm-delete">Supprimer l’annonce</button></div><p role="status"></p>';
     document.body.append(modal);modal.showModal();
     modal.addEventListener('close',()=>modal.remove());
     modal.querySelector('#cancel-delete').onclick=()=>modal.close();
@@ -113,7 +113,7 @@ export async function sellerApp({main,escape:e,money,api}){
       input('color','Couleur extérieure','list="colors" maxlength="60"')+input('interior','Intérieur','maxlength="60" placeholder="Tissu noir"')+
       input('plate','Immatriculation privée','maxlength="15" placeholder="AA-123-AA"')+'</div><p class="hint">L’immatriculation est visible uniquement dans l’espace vendeur. Les caractéristiques se renseignent ici manuellement.</p></section>'+
       '<section class="box wizard-step" data-step="1" hidden><div class="section-heading"><h2 tabindex="-1">Photos</h2><span id="photo-count">0 / 20</span></div>'+
-      '<label class="upload-zone" id="upload-zone"><strong>Ajouter des photos</strong><span>Sélectionnez plusieurs images ou glissez-les ici</span><span class="hint">JPEG, PNG, WebP · 20 photos maximum</span><input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>'+
+      '<label class="upload-zone" id="upload-zone"><strong>Ajouter des photos</strong><span>Sélectionnez plusieurs images ou glissez-les ici</span><span class="hint">JPEG, PNG, WebP — 20 photos maximum</span><input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>'+
       '<p id="upload-status" role="status"></p><div id="photos" class="photo-editor"></div><p class="hint">La première photo est la couverture. Déplacez les photos avec les boutons ou par glisser-déposer.</p></section>'+
       '<section class="box wizard-step" data-step="2" hidden><h2 tabindex="-1">Équipements et options</h2><label class="field">Rechercher ou créer un équipement<input id="equipment-input" type="text" list="equipment-list" placeholder="Caméra de recul, CarPlay…" maxlength="100" autocomplete="off"></label><div class="option-add"><button type="button" class="button light" id="add-equipment">Ajouter l’équipement</button><span class="hint">Validez aussi avec Entrée.</span></div><datalist id="equipment-list"></datalist><div id="extras" class="equipment-chips"></div></section>'+
       '<section class="box wizard-step" data-step="3" hidden><h2 tabindex="-1">Prix et description</h2>'+input('price','Prix de vente (€)','type="number" min="1" max="10000000" placeholder="11990"')+
@@ -128,7 +128,7 @@ export async function sellerApp({main,escape:e,money,api}){
       if(uploading||saving){alertBox('Attendez la fin de l’envoi ou de l’enregistrement.');return;}
       currentStep=index;
       steps.forEach((section,i)=>section.hidden=i!==index);
-      form.querySelector('#step-label').textContent='Étape '+(index+1)+' sur 5 · '+stepNames[index];
+      form.querySelector('#step-label').textContent='Étape '+(index+1)+' sur 5 — '+stepNames[index];
       form.querySelector('#step-progress').value=index+1;
       form.querySelector('#step-prev').hidden=index===0;
       form.querySelector('#step-next').hidden=index===4;
@@ -209,7 +209,7 @@ export async function sellerApp({main,escape:e,money,api}){
         }catch(error){failures.push(batch[i].name+' — '+error.message);}
       }
       uploading=false;form.querySelector('#save-draft').disabled=false;photoInput.disabled=false;photoInput.value='';main.querySelector('#save').disabled=false;main.querySelector('#publish').disabled=false;
-      feedback.textContent=failures.length ? failures.join(' · ')+'. Sélectionnez de nouveau ces photos pour réessayer.' : batch.length+' photo(s) ajoutée(s).';
+      feedback.textContent=failures.length ? failures.join(' — ')+'. Sélectionnez de nouveau ces photos pour réessayer.' : batch.length+' photo(s) ajoutée(s).';
     }
     photoInput.onchange=()=>upload(photoInput.files);
     const drop=main.querySelector('#upload-zone');

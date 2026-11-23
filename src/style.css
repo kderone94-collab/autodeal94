@@ -149,3 +149,6 @@ h3{font-size:28px;line-height:1.15}
  .seller-car-actions{max-width:none}.seller-top{gap:12px}.vehicle-form .wizard-actions{z-index:25}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Clean headings without decorative dots. */
+.kicker:before{content:none!important;display:none!important}
