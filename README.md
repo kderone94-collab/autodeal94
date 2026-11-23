@@ -57,3 +57,5 @@ Dans l’espace vendeur, sélectionnez **Prochainement disponible** pour annonce
 La migration `catalog_availability_statuses` ajoute le statut, étend le catalogue public et l’accès aux photos, et conserve le contrôle vendeur sur les modifications.
 
 Vérification du catalogue : `npm install --no-save --package-lock=false jsdom` puis `node tests/catalog.test.mjs`.
+
+Le visuel Marianne du bandeau SIV en bas de page provient du dépôt officiel GouvernementFR/dsfr : https://github.com/GouvernementFR/dsfr/blob/main/src/dsfr/component/logo/mockup/marianne.svg (dessin conservé).

@@ -93,3 +93,7 @@ body{font-size:16px}.ref,.kicker{font-size:12px}.chips span,.tag{font-size:13px}
 .siv-banner .siv-subtitle{display:block;font-size:12px;font-weight:500;color:#5a6575;margin-top:3px}
 .siv-banner .siv-appointment{font-size:12px;color:#5a6575}
 @media(max-width:620px){.siv-banner{padding:13px 0 10px}.siv-banner .siv-inner{gap:0}.siv-identity{gap:10px}.siv-marianne{width:48px;flex-basis:48px;height:36px}.siv-banner strong{font-size:12px}.siv-banner .siv-subtitle{font-size:10px;line-height:1.45}.siv-banner .siv-appointment{display:none}}
+
+.siv-banner .siv-marianne{width:88px;flex-basis:88px;height:36px;border:0;border-radius:0;background:linear-gradient(90deg,#000091 0 50%,#e1000f 50% 100%);object-fit:contain}
+.siv-banner{border-top:1px solid #e1e5ec;border-bottom:0;padding:22px 0}
+@media(max-width:620px){.siv-banner .siv-marianne{width:66px;flex-basis:66px;height:27px}.siv-banner{padding:20px 0}}
