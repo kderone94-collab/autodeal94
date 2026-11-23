@@ -82,3 +82,14 @@ body{font-size:16px}.ref,.kicker{font-size:12px}.chips span,.tag{font-size:13px}
 .service-card .service-art p{color:white}
 .status.status-vendu{background:#fde8eb;color:#a91d2a}
 .ribbon span+span{border-left-color:#ffffff55}
+
+/* White SIV strip with a French tricolour signature. */
+.siv-banner{background:#fff;color:#17253d;border-bottom:1px solid #e1e5ec;padding:12px 0;position:relative}
+.siv-banner:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#173a78 0 33.33%,#fff 33.33% 66.66%,#d52b36 66.66%)}
+.siv-banner .siv-inner{align-items:center;gap:18px}
+.siv-identity{display:flex;align-items:center;gap:14px;min-width:0}
+.siv-marianne{display:block;flex:0 0 64px;width:64px;height:47px;border:1px solid #e5e7eb;border-radius:3px}
+.siv-banner strong{display:block;font-size:14px;font-weight:800;letter-spacing:.01em}
+.siv-banner .siv-subtitle{display:block;font-size:12px;font-weight:500;color:#5a6575;margin-top:3px}
+.siv-banner .siv-appointment{font-size:12px;color:#5a6575}
+@media(max-width:620px){.siv-banner{padding:13px 0 10px}.siv-banner .siv-inner{gap:0}.siv-identity{gap:10px}.siv-marianne{width:48px;flex-basis:48px;height:36px}.siv-banner strong{font-size:12px}.siv-banner .siv-subtitle{font-size:10px;line-height:1.45}.siv-banner .siv-appointment{display:none}}
